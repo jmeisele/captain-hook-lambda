@@ -49,20 +49,19 @@ resource "aws_lambda_function" "lambda" {
   ]
 }
 
-resource "aws_lambda_function_url" "this" {
-  function_name = aws_lambda_function.lambda.function_name
-  # qualifier          = "github_webhooks"
-  authorization_type = "NONE"
+# resource "aws_lambda_function_url" "this" {
+#   function_name = aws_lambda_function.lambda.function_name
+#   authorization_type = "NONE"
 
-  cors {
-    allow_credentials = true
-    allow_origins     = ["https://github.com"]
-    allow_methods     = ["POST"]
-    allow_headers     = ["date", "keep-alive"]
-    expose_headers    = ["keep-alive", "date"]
-    max_age           = 86400
-  }
-}
+#   cors {
+#     allow_credentials = true
+#     allow_origins     = ["https://github.com"]
+#     allow_methods     = ["POST"]
+#     allow_headers     = ["date", "keep-alive"]
+#     expose_headers    = ["keep-alive", "date"]
+#     max_age           = 86400
+#   }
+# }
 
 ##########################
 #   Cloudwatch Logs     #
