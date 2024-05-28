@@ -6,8 +6,8 @@ provider "aws" {
   skip_metadata_api_check = true
   default_tags {
     tags = {
-      GitHubRepo = "terraform-aws-starter"
-      Workspace  = "terraform-aws-starter"
+      GitHubRepo = "captain-hook-lambda"
+      Workspace  = "captain-hook-lambda"
     }
   }
 }
