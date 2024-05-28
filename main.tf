@@ -50,8 +50,8 @@ resource "aws_lambda_function" "lambda" {
 }
 
 resource "aws_lambda_function_url" "this" {
-  function_name      = aws_lambda_function.lambda.function_name
-  qualifier          = "github_webhooks"
+  function_name = aws_lambda_function.lambda.function_name
+  # qualifier          = "github_webhooks"
   authorization_type = "NONE"
 
   cors {
