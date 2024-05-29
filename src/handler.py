@@ -43,7 +43,6 @@ def lambda_handler(event: Dict, context: Dict) -> Dict[str, Any]:
     # Input validation via pydantic model
     try:
         event_data = AWSEvent.model_validate(event)
-        print(f"event_data: {event_data}")
     except ValidationError as e:
         return {
             "statusCode": 400,
@@ -51,36 +50,36 @@ def lambda_handler(event: Dict, context: Dict) -> Dict[str, Any]:
             "body": json.dumps({"error": e.errors()}),
         }
 
-    parsed_event = AWSEvent(**event)
-    print(f"parsed_event: {parsed_event}")
+    # parsed_event = AWSEvent(**event)
+    # print(f"parsed_event: {parsed_event}")
+
+    # print(type(event["body"]))
+    # print(json.loads(event["body"])["action"])
 
     # If repo created event proceed, otherwise skip
-    # print(type(event["body"]))
-    print(json.loads(event["body"])["action"])
-
-    # if json.loads(event["body"])["action"] != "created":
-    #     print("repo not created skipping")
-    #     return {
-    #         "statusCode": 200,
-    #         "headers": {"Content-Type": "application/json"},
-    #         "body": json.dumps("repo not created skipping"),
-    #     }
+    if json.loads(event["body"])["action"] != "created":
+        print("repo not created skipping")
+        return {
+            "statusCode": 200,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps("repo not created skipping"),
+        }
     
-    # headers = event.get('headers')
-    # detail_type = headers.get('x-github-event', 'github-webhook-lambda')
+    headers = event.get('headers')
+    detail_type = headers.get('x-github-event', 'github-webhook-lambda')
     
 
     # Put enriched data into event bus
-    # event_bridge_response = eventbridge_client.put_events(
-    #     Entries=[
-    #         {
-    #             "Source": "github.com",
-    #             "DetailType": detail_type,
-    #             "Detail": json.dumps(event),
-    #             "EventBusName": "default",
-    #         }
-    #     ],
-    # )
+    event_bridge_response = eventbridge_client.put_events(
+        Entries=[
+            {
+                "Source": "github.com",
+                "DetailType": detail_type,
+                "Detail": json.dumps(event),
+                "EventBusName": "default",
+            }
+        ],
+    )
 
     return {
         "statusCode": 200,
