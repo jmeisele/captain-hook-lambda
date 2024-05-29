@@ -3,7 +3,7 @@ import logging
 from typing import Any, Dict
 
 import boto3
-from pydantic import BaseModel, ValidationError, computed_field
+from pydantic import BaseModel, ValidationError, computed_field, validator
 
 
 class GitHubEvent(BaseModel):
