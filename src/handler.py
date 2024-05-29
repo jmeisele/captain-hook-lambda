@@ -22,6 +22,12 @@ class AWSEvent(BaseModel):
     requestContext: dict
     body: GitHubEvent
     isBase64Encoded: bool
+    
+    @validator('body', pre=True)
+    def parse_body(cls, value):
+        if isinstance(value, str):
+            return json.loads(value)
+        return value
 
 
 logger = logging.getLogger()
