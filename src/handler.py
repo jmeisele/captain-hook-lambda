@@ -24,10 +24,6 @@ class AWSEvent(BaseModel):
     isBase64Encoded: bool
 
 
-class Context(BaseModel):
-    aws_request_id: str  # (2)!
-
-
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -41,7 +37,6 @@ def lambda_handler(event: Dict, context: Dict) -> Dict[str, Any]:
     # Input validation via pydantic model
     try:
         event_data = AWSEvent.model_validate(event)
-        context_data = Context.model_validate(context)
     except ValidationError as e:
         return {
             "statusCode": 400,
