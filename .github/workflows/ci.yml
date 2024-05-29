@@ -9,7 +9,6 @@ on:
 jobs:
   create-lambda-layer-zip:
     name: Create lambda layer zip
-    needs: lint-test
     runs-on: ubuntu-20.04
     permissions:
       contents: write
