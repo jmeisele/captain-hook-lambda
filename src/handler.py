@@ -11,7 +11,6 @@ class GitHubEvent(BaseModel):
     repository: dict
     organization: dict
     sender: dict
-    fake_field: str
 
 
 class AWSEvent(BaseModel):
