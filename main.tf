@@ -44,6 +44,7 @@ resource "aws_lambda_function" "lambda" {
   runtime          = "python3.8"
   handler          = "handler.lambda_handler"
   timeout          = 10
+  layers           = [aws_lambda_layer_version.pydantic.arn]
   depends_on = [
     aws_cloudwatch_log_group.lambda
   ]
@@ -61,6 +62,16 @@ resource "aws_lambda_function_url" "this" {
     expose_headers    = ["keep-alive", "date"]
     max_age           = 86400
   }
+}
+
+###############
+#   Layer     #
+###############
+resource "aws_lambda_layer_version" "pydantic" {
+  filename            = "${path.module}/layer.zip"
+  description         = "pydantic module"
+  layer_name          = "pydantic-sdk"
+  compatible_runtimes = ["python3.8"]
 }
 
 ##########################

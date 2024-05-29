@@ -7,9 +7,39 @@ on:
       - main
 
 jobs:
+  create-lambda-layer-zip:
+    name: Create lambda layer zip
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      
+      - name: Install pydantic
+        run: |
+          pip3 install --platform manylinux2014_x86_64 --only-binary=:all: pydantic -t ./python
+      
+      - name: Zip pydantic-sdk
+        run: |
+          zip -r layer.zip ./python
+
+      - name: Upload layer.zip artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: layer
+          path: ./layer.zip
+
   plan-infra:
     name: Plan Infrastructure w/ Terraform
     runs-on: ubuntu-20.04
+    needs: create-lambda-layer-zip
     permissions:
       contents: read
       id-token: write

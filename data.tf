@@ -6,6 +6,7 @@ data "aws_caller_identity" "current" {}
 ###############
 data "aws_iam_policy_document" "lambda" {
   statement {
+    sid = "AllowLogging"
     actions = [
       "logs:CreateLogStream",
       "logs:PutLogEvents"
@@ -13,6 +14,11 @@ data "aws_iam_policy_document" "lambda" {
     resources = [
       "arn:aws:logs:*:*:*"
     ]
+  }
+  statement {
+    sid       = "AllowEventBus"
+    actions   = ["events:PutEvents"]
+    resources = ["arn:aws:events:${var.region}:${var.account_id}:event-bus/*"]
   }
 }
 
