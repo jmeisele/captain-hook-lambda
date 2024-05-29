@@ -64,19 +64,19 @@ def lambda_handler(event: Dict, context: Dict) -> Dict[str, Any]:
     
 
     # Put enriched data into event bus
-    # event_bridge_response = eventbridge_client.put_events(
-    #     Entries=[
-    #         {
-    #             "Source": "github.com",
-    #             "DetailType": detail_type,
-    #             "Detail": json.dumps(event),
-    #             "EventBusName": "default",
-    #         }
-    #     ],
-    # )
+    event_bridge_response = eventbridge_client.put_events(
+        Entries=[
+            {
+                "Source": "github.com",
+                "DetailType": detail_type,
+                "Detail": json.dumps(event),
+                "EventBusName": "default",
+            }
+        ],
+    )
 
     return {
         "statusCode": 200,
         "headers": {"Content-Type": "application/json"},
-        "body": json.dumps("Hello from lambda"),
+        "body": json.dumps("Sent to EventBus"),
     }
