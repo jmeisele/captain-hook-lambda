@@ -51,15 +51,24 @@ def lambda_handler(event: Dict, context: Dict) -> Dict[str, Any]:
         }
 
     # If repo created event proceed, otherwise skip
-    # Enrich event data?
+    if "created" not in event.body.action:
+        print("repo not created skipping")
+        return {
+            "statusCode": 200,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps("repo not created skipping"),
+        }
+    
+    headers = event.get('headers')
+    detail_type = headers.get('x-github-event', 'github-webhook-lambda')
+    
 
     # Put enriched data into event bus
     # event_bridge_response = eventbridge_client.put_events(
     #     Entries=[
     #         {
     #             "Source": "github.com",
-    #             "Resources": [""],
-    #             "DetailType": event["detail-type"],
+    #             "DetailType": detail_type,
     #             "Detail": json.dumps(event),
     #             "EventBusName": "default",
     #         }
