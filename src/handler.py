@@ -13,6 +13,17 @@ class GitHubEvent(BaseModel):
     sender: dict
 
 
+class AWSEvent(BaseModel):
+    version: str
+    routeKey: str
+    rawPath: str
+    rawQueryString: str
+    headers: dict
+    requestContext: dict
+    body: GitHubEvent
+    isBase64Encoded: bool
+
+
 class Context(BaseModel):
     aws_request_id: str  # (2)!
 
@@ -29,13 +40,13 @@ def lambda_handler(event: Dict, context: Dict) -> Dict[str, Any]:
 
     # Input validation via pydantic model
     try:
-        event_data = GitHubEvent.model_validate(event)
+        event_data = AWSEvent.model_validate(event)
         context_data = Context.model_validate(context)
     except ValidationError as e:
         return {
             "statusCode": 400,
             "headers": {"Content-Type": "application/json"},
-            "body": json.dumps(e.errors),
+            "body": json.dumps({"error": e.errors}),
         }
 
     # If repo created event proceed, otherwise skip
