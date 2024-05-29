@@ -49,6 +49,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Download layer.zip
+        uses: actions/download-artifact@v3
+        with:
+          name: layer
+      
       - name: Generate .auto.tfvars
         run: |
           echo "access_key=\"${{ secrets.AWS_ACCESS_KEY_ID }}\"" >> ./.auto.tfvars
