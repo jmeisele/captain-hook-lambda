@@ -46,7 +46,7 @@ def lambda_handler(event: Dict, context: Dict) -> Dict[str, Any]:
         return {
             "statusCode": 400,
             "headers": {"Content-Type": "application/json"},
-            "body": json.dumps({"error": e.message}),
+            "body": json.dumps({"error": e}),
         }
 
     # If repo created event proceed, otherwise skip
