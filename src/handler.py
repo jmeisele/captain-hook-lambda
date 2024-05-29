@@ -55,10 +55,10 @@ def lambda_handler(event: Dict, context: Dict) -> Dict[str, Any]:
     print(f"parsed_event: {parsed_event}")
 
     # If repo created event proceed, otherwise skip
-    print(type(event["body"]))
-    # print(event["body"]["action"])
+    # print(type(event["body"]))
+    print(json.loads(event["body"])["action"])
 
-    # if event["body"]["action"] != "created":
+    # if json.loads(event["body"])["action"] != "created":
     #     print("repo not created skipping")
     #     return {
     #         "statusCode": 200,
