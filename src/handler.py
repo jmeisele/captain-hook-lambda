@@ -88,9 +88,3 @@ def lambda_handler(event: Dict, context: Dict) -> Dict[str, Any]:
             "headers": {"Content-Type": "application/json"},
             "body": json.dumps(f"Client Error: {e}"),
         }
-
-    # return {
-    #     "statusCode": 200,
-    #     "headers": {"Content-Type": "application/json"},
-    #     "body": json.dumps("Sent to EventBus"),
-    # }
