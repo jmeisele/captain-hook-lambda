@@ -3,6 +3,7 @@ import logging
 from typing import Any, Dict
 
 import boto3
+from botocore.exceptions import ClientError
 from pydantic import BaseModel, ValidationError, computed_field, validator
 
 
@@ -22,8 +23,8 @@ class AWSEvent(BaseModel):
     requestContext: dict
     body: GitHubEvent
     isBase64Encoded: bool
-    
-    @validator('body', pre=True)
+
+    @validator("body", pre=True)
     def parse_body(cls, value):
         if isinstance(value, str):
             return json.loads(value)
@@ -50,12 +51,6 @@ def lambda_handler(event: Dict, context: Dict) -> Dict[str, Any]:
             "body": json.dumps({"error": e.errors()}),
         }
 
-    # parsed_event = AWSEvent(**event)
-    # print(f"parsed_event: {parsed_event}")
-
-    # print(type(event["body"]))
-    # print(json.loads(event["body"])["action"])
-
     # If repo created event proceed, otherwise skip
     if json.loads(event["body"])["action"] != "created":
         print("repo not created skipping")
@@ -64,25 +59,38 @@ def lambda_handler(event: Dict, context: Dict) -> Dict[str, Any]:
             "headers": {"Content-Type": "application/json"},
             "body": json.dumps("repo not created skipping"),
         }
-    
-    headers = event.get('headers')
-    detail_type = headers.get('x-github-event', 'github-webhook-lambda')
-    
 
-    # Put enriched data into event bus
-    event_bridge_response = eventbridge_client.put_events(
-        Entries=[
-            {
-                "Source": "github.com",
-                "DetailType": detail_type,
-                "Detail": json.dumps(event),
-                "EventBusName": "default",
-            }
-        ],
-    )
+    headers = event.get("headers")
+    detail_type = headers.get("x-github-event", "github-webhook-lambda")
 
-    return {
-        "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
-        "body": json.dumps("Sent to EventBus"),
-    }
+    # Put data into event bus
+    try:
+        event_bridge_response = eventbridge_client.put_events(
+            Entries=[
+                {
+                    "Source": "github.com",
+                    "DetailType": detail_type,
+                    "Detail": json.dumps(event),
+                    "EventBusName": "default",
+                }
+            ],
+        )
+        print(f"Eventbridge Response: {event_bridge_response}")
+        return {
+            "statusCode": 200,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps("Event published in default event bus"),
+        }
+    except ClientError as e:
+        print(f"{e}")
+        return {
+            "statusCode": 400,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps(f"Client Error: {e}"),
+        }
+
+    # return {
+    #     "statusCode": 200,
+    #     "headers": {"Content-Type": "application/json"},
+    #     "body": json.dumps("Sent to EventBus"),
+    # }
