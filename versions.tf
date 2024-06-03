@@ -4,8 +4,8 @@ terraform {
     hostname     = "app.terraform.io"
     organization = "davinci"
     workspaces {
-      name    = "captain-hook-lambda"
-      project = "Test"
+      name = "captain-hook-lambda"
+      # project = "Dev"
     }
   }
   required_providers {

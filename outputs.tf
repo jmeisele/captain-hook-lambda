@@ -1,4 +1,4 @@
-output "function_url" {
-  value       = aws_lambda_function_url.this.function_url
-  description = "Function URL"
-}
+# output "function_url" {
+#   value       = aws_lambda_function_url.this.function_url
+#   description = "Function URL"
+# }
