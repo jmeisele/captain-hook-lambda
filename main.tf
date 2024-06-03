@@ -1,22 +1,22 @@
 ###############
 #     IAM     #
 ###############
-# resource "aws_iam_role" "iam_for_lambda" {
-#   name = "${var.function_name}-role"
-#   assume_role_policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Sid    = "AllowFromLambda",
-#         Effect = "Allow"
-#         Action = "sts:AssumeRole"
-#         Principal = {
-#           Service = "lambda.amazonaws.com"
-#         }
-#       }
-#     ]
-#   })
-# }
+resource "aws_iam_role" "iam_for_lambda" {
+  name = "${var.function_name}-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowFromLambda",
+        Effect = "Allow"
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
 
 # IAM policy for logging from a lambda
 # resource "aws_iam_policy" "iam_policy_for_lambda" {
